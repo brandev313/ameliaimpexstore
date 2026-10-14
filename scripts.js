@@ -46,9 +46,9 @@ box.addEventListener('mouseenter',function(){hov=true;clearTimeout(t);box.classL
 box.addEventListener('mouseleave',function(){hov=false;inside=false;if(play){restart()}run()});
 w.addEventListener('mousemove',function(e){var r=w.getBoundingClientRect();tx=((e.clientX-r.left)/r.width-.5)*2;ty=((e.clientY-r.top)/r.height-.5)*2;inside=true});
 box.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){go(i+1,1)}if(e.key==='ArrowLeft'){go(i-1,-1)}});
-var x0=null;
-box.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
-box.addEventListener('touchend',function(e){if(x0===null){return}var d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>40){go(i+(d<0?1:-1),d<0?1:-1)}x0=null});
+var x0=null,y0=0;
+box.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+box.addEventListener('touchend',function(e){if(x0===null){return}var d=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(d)>40&&Math.abs(d)>Math.abs(dy)){go(i+(d<0?1:-1),d<0?1:-1)}x0=null});
 if('IntersectionObserver' in window){new IntersectionObserver(function(es){vis=es[0].isIntersecting}).observe(w)}
 function tick(now){
 if(vis){
@@ -58,7 +58,7 @@ w.style.setProperty('--mx',cx.toFixed(3));w.style.setProperty('--my',cy.toFixed(
 }
 requestAnimationFrame(tick);
 }
-if(!rm){requestAnimationFrame(tick)}
+if(!rm&&!matchMedia('(hover:none),(max-width:960px)').matches){requestAnimationFrame(tick)}
 setTimeout(function(){w.className=w.className.replace(' intro','')},3200);
 lay(true);setp();run();
 })();
